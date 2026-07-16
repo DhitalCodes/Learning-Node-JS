@@ -1,0 +1,236 @@
+/* ========== Google Font ========== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ========== Reset & Base ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f7;  /* light grey background */
+    padding: 20px;
+}
+
+/* ========== Glass Card – higher opacity for contrast ========== */
+.container {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.box {
+    background: rgba(255, 255, 255, 0.92);   /* almost solid white */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 28px;
+    padding: 40px 35px;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12),
+                0 4px 10px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+}
+
+.box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 28px 50px -14px rgba(0, 102, 204, 0.08);
+}
+
+/* ========== Typography – high contrast ========== */
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1d1d1f;   /* Apple dark grey – very readable */
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+h1 span {
+    color: #0066cc;   /* primary blue */
+}
+
+p.sub {
+    color: #3a3a3c;   /* darker grey for better contrast */
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* ========== Form Elements ========== */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 5px;
+    letter-spacing: 0.2px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1.5px solid #c6c6c8;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #1d1d1f;
+    transition: all 0.2s ease;
+    outline: none;
+    font-family: inherit;
+}
+
+.input-group input::placeholder {
+    color: #6e6e73;   /* dark enough to be readable */
+}
+
+.input-group input:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
+}
+
+.input-group small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6e6e73;   /* readable grey */
+    transition: color 0.3s;
+}
+
+/* validation feedback – high contrast */
+small.error {
+    color: #b30012 !important;  /* darker red */
+}
+small.success {
+    color: #1e8b3a !important;  /* darker green */
+}
+
+/* input state classes */
+.input-group input.is-valid {
+    border-color: #1e8b3a;
+    background: #f0fff4;
+}
+.input-group input.is-invalid {
+    border-color: #b30012;
+    background: #fff5f5;
+}
+
+/* ========== Buttons ========== */
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #0066cc;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+    font-family: inherit;
+    letter-spacing: 0.3px;
+}
+
+.btn:hover {
+    background: #004c99;
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 102, 204, 0.4);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========== Links ========== */
+.links {
+    margin-top: 24px;
+    font-size: 14px;
+    color: #3a3a3c;
+}
+
+.links a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+    border-bottom: 1.5px solid transparent;
+}
+
+.links a:hover {
+    color: #004c99;
+    border-bottom-color: #0066cc;
+}
+
+/* ========== Messages – high contrast ========== */
+.message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #f5f5f7;
+    border: 1px solid #d2d2d7;
+    color: #1d1d1f;
+}
+
+.message.error {
+    background: #ffe6e6;
+    border-color: #ffb3b3;
+    color: #99000d;
+}
+
+.message.success {
+    background: #e6f9ed;
+    border-color: #a8e0b8;
+    color: #0d6326;
+}
+
+/* ========== Dashboard specific ========== */
+.dashboard-card .btn {
+    width: auto;
+    padding: 12px 32px;
+    margin-top: 8px;
+}
+
+.dashboard-card h2 {
+    color: #1d1d1f;
+    font-weight: 500;
+    margin: 12px 0 6px;
+}
+
+.dashboard-card h2 span {
+    color: #0066cc;
+    font-weight: 700;
+}
+
+.dashboard-card p {
+    color: #3a3a3c;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 480px) {
+    .box {
+        padding: 30px 20px;
+    }
+    h1 {
+        font-size: 24px;
+    }
+}

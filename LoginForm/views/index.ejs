@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="box">
+            <h1>🔐 <span>Welcome Back</span></h1>
+            <p class="sub">Sign in to continue</p>
+
+            <div id="messageContainer"></div>
+
+            <form action="/login" method="POST" id="loginForm">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required />
+                </div>
+
+                <button type="submit" class="btn">Sign In</button>
+            </form>
+
+            <div class="links">
+                Don't have an account? <a href="/signup">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const error = params.get('error');
+            const success = params.get('success');
+            const container = document.getElementById('messageContainer');
+            if (error) {
+                container.innerHTML = `<div class="message error">${error}</div>`;
+            } else if (success) {
+                container.innerHTML = `<div class="message success">${success}</div>`;
+            }
+        })();
+    </script>
+</body>
+</html>
