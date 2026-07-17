@@ -1,4 +1,3 @@
-// controllers/authController.js
 const UserModel = require('../models/userModel');
 
 function handleSignup(req, res) {
