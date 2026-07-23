@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Viewer</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-user-circle"></i>
+            <h1>User <span>Viewer</span></h1>
+        </div>
+
+        <div class="search-section">
+            <label for="userIdInput"><i class="fas fa-hashtag" style="margin-right:6px;color:#4f46e5;"></i>Enter User ID</label>
+            <div class="input-group">
+                <input type="text" id="userIdInput" placeholder="e.g. 1, 2, or 3" autocomplete="off" />
+                <button id="fetchBtn"><i class="fas fa-search"></i> Fetch</button>
+            </div>
+        </div>
+
+        <div class="spinner" id="spinner"><i class="fas fa-circle-notch"></i> Loading...</div>
+
+        <div class="message" id="message">
+            <i class="fas fa-info-circle"></i>
+            <span id="messageText"></span>
+        </div>
+
+        <div class="user-card" id="userCard">
+            <div class="user-avatar">
+                <div class="circle" id="userAvatar">U</div>
+            </div>
+            <div class="user-detail">
+                <span class="icon"><i class="fas fa-user"></i></span>
+                <span class="label">Name</span>
+                <span class="value" id="userName">—</span>
+            </div>
+            <div class="user-detail">
+                <span class="icon"><i class="fas fa-envelope"></i></span>
+                <span class="label">Email</span>
+                <span class="value email" id="userEmail">—</span>
+            </div>
+            <div class="user-detail">
+                <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+                <span class="label">Age</span>
+                <span class="value" id="userAge">—</span>
+            </div>
+            <div class="user-meta">
+                <span><i class="fas fa-id-card"></i> ID: <span id="userIdMeta">—</span></span>
+                <span><i class="fas fa-clock"></i> <span id="userCreated">—</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
