@@ -12,6 +12,13 @@ const userAge = document.getElementById('userAge');
 const userIdMeta = document.getElementById('userIdMeta');
 const userCreated = document.getElementById('userCreated');
 
+// Stats elements
+const totalUsersEl = document.getElementById('totalUsers');
+const avgAgeEl = document.getElementById('avgAge');
+const under25El = document.getElementById('under25');
+const between25And35El = document.getElementById('between25And35');
+const over35El = document.getElementById('over35');
+
 function showMessage(text, type) {
     message.className = 'message show ' + type;
     messageText.textContent = text;
@@ -88,6 +95,27 @@ async function fetchUser(id) {
         showLoading(false);
     }
 }
+
+async function fetchStats() {
+    try {
+        const response = await fetch('/api/stats');
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                totalUsersEl.textContent = data.stats.totalUsers;
+                avgAgeEl.textContent = data.stats.averageAge;
+                under25El.textContent = data.stats.ageDistribution.under25;
+                between25And35El.textContent = data.stats.ageDistribution.between25And35;
+                over35El.textContent = data.stats.ageDistribution.over35;
+            }
+        }
+    } catch (error) {
+        console.error('Failed to fetch stats:', error);
+    }
+}
+
+// Load stats on page load
+fetchStats();
 
 fetchBtn.addEventListener('click', () => fetchUser(userIdInput.value));
 userIdInput.addEventListener('keydown', (e) => {
