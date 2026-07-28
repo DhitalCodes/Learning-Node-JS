@@ -1,0 +1,14 @@
+{
+  "name": "auth-system",
+  "version": "1.0.0",
+  "description": "User Authentication System using Node.js, Express, and local JSON storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.22.2",
+    "express-session": "^1.19.0"
+  }
+}
