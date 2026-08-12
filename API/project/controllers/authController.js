@@ -1,21 +1,33 @@
 const { readUsers, writeUsers, findUserByEmail } = require('../utils/fileHandler');
+const { isValidEmail, isValidPassword, isValidName } = require('../utils/validation');
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    let { name, email, password } = req.body;
 
-    // Backend validation
+    // ----- Sanitize inputs -----
+    name = (name || '').trim();
+    email = (email || '').trim();
+    password = (password || '').trim();
+
+    // ----- Validation -----
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ message: 'Invalid email format' });
-    }
-    if (password.length < 8) {
-      return res.status(400).json({ message: 'Password must be at least 8 characters' });
+
+    if (!isValidName(name)) {
+      return res.status(400).json({ message: 'Name must be 2-50 characters and contain only letters, spaces, hyphens, apostrophes, or dots.' });
     }
 
-    // Check for duplicate email
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email format or too long (max 100 characters).' });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ message: 'Password must be 8-64 characters and contain at least one letter and one digit.' });
+    }
+
+    // Check duplicate email
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'Email already registered' });
@@ -30,7 +42,7 @@ exports.register = async (req, res) => {
       id: nextId,
       name,
       email,
-      password   // no hashing
+      password   // no hashing (as per original)
     };
 
     users.push(newUser);
@@ -54,10 +66,15 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, password, isAdmin } = req.body;
+    let { email, password, isAdmin } = req.body;
+
+    // Sanitize
+    email = (email || '').trim();
+    password = (password || '').trim();
 
     // Admin login
     if (isAdmin) {
+      // Admin credentials are hardcoded; we just trim for safety
       if (email === 'admin' && password === 'admin123') {
         req.session.isAdmin = true;
         return res.status(200).json({ message: 'Admin login successful', redirect: '/admin' });
@@ -68,6 +85,11 @@ exports.login = async (req, res) => {
     // Normal user login
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
     }
 
     const user = await findUserByEmail(email);
