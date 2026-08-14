@@ -1,15 +1,19 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMessages();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
+  const identifier = document.getElementById('identifier').value.trim();
+  const password = document.getElementById('password').value.trim();
   const isAdmin = document.getElementById('isAdmin').checked;
-  if (!email || !password) return displayError('Please fill in all fields');
+
+  if (!identifier || !password) {
+    return displayError('Please fill in all fields');
+  }
+
   try {
     const res = await fetch('/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, isAdmin })
+      body: JSON.stringify({ identifier, password, isAdmin })
     });
     const data = await res.json();
     if (res.ok) {

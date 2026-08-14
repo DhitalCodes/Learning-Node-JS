@@ -5,9 +5,11 @@
 <div class="container">
   <h1>Register</h1>
   <form id="registerForm">
+    <div class="form-group"><label for="username">Username (5-30 chars, alphanumeric/underscore)</label><input type="text" id="username" required></div>
     <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" required></div>
     <div class="form-group"><label for="email">Email</label><input type="email" id="email" required></div>
-    <div class="form-group"><label for="password">Password (min 8 chars)</label><input type="password" id="password" minlength="8" required></div>
+    <div class="form-group"><label for="phone">Phone (10 digits)</label><input type="tel" id="phone" pattern="\d{10}" required></div>
+    <div class="form-group"><label for="password">Password (min 8, 1 digit, 2 upper, 2 lower, not same as username)</label><input type="password" id="password" required></div>
     <div class="form-group"><label for="confirmPassword">Confirm Password</label><input type="password" id="confirmPassword" required></div>
     <button type="submit">Create Account</button>
     <div id="errorMessage" class="error-message"></div>

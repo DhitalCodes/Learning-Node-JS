@@ -9,10 +9,11 @@ async function loadUserProfile() {
       greeting.textContent = `Hello, ${data.name}!`;
       // Show profile details
       profileDiv.innerHTML = `
-        <p><strong>User ID:</strong> ${data.id}</p>
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Password (hashed):</strong> ${data.password}</p>`;
+  <p><strong>User ID:</strong> ${data.id}</p>
+  <p><strong>Username:</strong> ${data.username}</p>
+  <p><strong>Name:</strong> ${data.name}</p>
+  <p><strong>Email:</strong> ${data.email}</p>
+  <p><strong>Phone:</strong> ${data.phone}</p>`;
     } else {
       if (res.status === 401 || res.status === 403) window.location.href = '/login';
       else profileDiv.innerHTML = `<p class="error-message">${data.message}</p>`;

@@ -1,61 +1,101 @@
-const { readUsers, writeUsers, findUserByEmail } = require('../utils/fileHandler');
-const { isValidEmail, isValidPassword, isValidName } = require('../utils/validation');
+const { readUsers, writeUsers, findUserByEmail, findUserByUsername, findUserByPhone } = require('../utils/fileHandler');
+const { isValidEmail, isValidPassword, isValidUsername, isValidName, isValidPhone } = require('../utils/validation');
+const bcrypt = require('bcrypt');
 
 exports.register = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
+    let { username, name, email, password, confirmPassword, phone } = req.body;
 
-    // ----- Sanitize inputs -----
+    // Sanitize
+    username = (username || '').trim();
     name = (name || '').trim();
     email = (email || '').trim();
+    phone = (phone || '').trim();
     password = (password || '').trim();
+    confirmPassword = (confirmPassword || '').trim();
 
-    // ----- Validation -----
-    if (!name || !email || !password) {
+    // ----- Basic presence -----
+    if (!username || !name || !email || !password || !confirmPassword || !phone) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
+    // ----- Backend confirm password -----
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: 'Passwords do not match' });
+    }
+
+    // ----- Validate username -----
+    if (!isValidUsername(username)) {
+      return res.status(400).json({ 
+        message: 'Username must be 5-30 characters, alphanumeric or underscore only, no special characters like @ or .' 
+      });
+    }
+    const existingUsername = await findUserByUsername(username);
+    if (existingUsername) {
+      return res.status(400).json({ message: 'Username already taken' });
+    }
+
+    // ----- Validate email -----
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Invalid email format (max 100 characters, must contain @)' });
+    }
+    const existingEmail = await findUserByEmail(email);
+    if (existingEmail) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    // ----- Validate phone -----
+    if (!isValidPhone(phone)) {
+      return res.status(400).json({ message: 'Phone must be exactly 10 digits' });
+    }
+    const existingPhone = await findUserByPhone(phone);
+    if (existingPhone) {
+      return res.status(400).json({ message: 'Phone number already registered' });
+    }
+
+    // ----- Validate password (with username for comparison) -----
+    if (!isValidPassword(password, username)) {
+      return res.status(400).json({ 
+        message: 'Password must be 8-64 characters, contain at least one digit, at least 2 uppercase and 2 lowercase letters, and not be the same as username' 
+      });
+    }
+
+    // ----- Validate name -----
     if (!isValidName(name)) {
       return res.status(400).json({ message: 'Name must be 2-50 characters and contain only letters, spaces, hyphens, apostrophes, or dots.' });
     }
 
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ message: 'Invalid email format or too long (max 100 characters).' });
-    }
-
-    if (!isValidPassword(password)) {
-      return res.status(400).json({ message: 'Password must be 8-64 characters and contain at least one letter and one digit.' });
-    }
-
-    // Check duplicate email
-    const existingUser = await findUserByEmail(email);
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
-
-    // Generate next sequential ID
+    // ----- Generate ID -----
     const users = await readUsers();
     const nextId = users.length === 0 ? 1 : Math.max(...users.map(u => u.id)) + 1;
 
-    // Store password as plain text (for educational demo)
+    // ----- Hash password -----
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // ----- Create user -----
     const newUser = {
       id: nextId,
+      username,
       name,
       email,
-      password   // no hashing (as per original)
+      phone,
+      password: hashedPassword   // stored as hash
     };
 
     users.push(newUser);
     await writeUsers(users);
 
-    // Auto-login after registration
+    // Auto-login
     req.session.userId = newUser.id;
     return res.status(201).json({
       message: 'Registration successful',
       user: {
         id: newUser.id,
+        username: newUser.username,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        phone: newUser.phone
       }
     });
   } catch (error) {
@@ -66,16 +106,14 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    let { email, password, isAdmin } = req.body;
+    let { identifier, password, isAdmin } = req.body;
 
-    // Sanitize
-    email = (email || '').trim();
+    identifier = (identifier || '').trim();
     password = (password || '').trim();
 
-    // Admin login
+    // Admin login (hardcoded)
     if (isAdmin) {
-      // Admin credentials are hardcoded; we just trim for safety
-      if (email === 'admin' && password === 'admin123') {
+      if (identifier === 'admin' && password === 'admin123') {
         req.session.isAdmin = true;
         return res.status(200).json({ message: 'Admin login successful', redirect: '/admin' });
       }
@@ -83,26 +121,33 @@ exports.login = async (req, res) => {
     }
 
     // Normal user login
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    if (!identifier || !password) {
+      return res.status(400).json({ message: 'Identifier and password are required' });
     }
 
-    // Validate email format
-    if (!isValidEmail(email)) {
-      return res.status(400).json({ message: 'Invalid email format' });
+    // Determine what the identifier is: email, phone, or username
+    let user = null;
+    if (identifier.includes('@')) {
+      // Treat as email
+      user = await findUserByEmail(identifier);
+    } else if (/^\d{10}$/.test(identifier)) {
+      // Exactly 10 digits -> phone
+      user = await findUserByPhone(identifier);
+    } else {
+      // Otherwise username
+      user = await findUserByUsername(identifier);
     }
 
-    const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare plain text password
-    if (password !== user.password) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+    // Compare hashed password
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Set session
     req.session.userId = user.id;
     return res.status(200).json({
       message: 'Login successful',

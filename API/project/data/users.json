@@ -1,20 +1,18 @@
 [
   {
     "id": 1,
-    "name": "Aaditya Dhital",
-    "email": "notmediocreeditz@gmail.com",
-    "password": "11223344"
+    "username": "pratikoli",
+    "name": "Pratik Oli",
+    "email": "pratik666@gmail.com",
+    "phone": "1234567890",
+    "password": "12qwasZX@#"
   },
   {
     "id": 2,
-    "name": "aagrim",
-    "email": "aagrim12@gmail.com",
-    "password": "12345678"
-  },
-  {
-    "id": 3,
-    "name": "qw",
-    "email": "asd@asd.com",
-    "password": "12qwasZX"
+    "username": "SamirKazi12_",
+    "name": "Samir Bhattrai",
+    "email": "samir@gmail.com",
+    "phone": "9860901451",
+    "password": "$2b$10$Ra48ismgeAdPd..uc89c0eNgC6MPvWZcldnJ0jwR0/j./TWdwhaZe"
   }
 ]

@@ -30,8 +30,15 @@ app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'views', '
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
+
 // Redirect root to login page
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
